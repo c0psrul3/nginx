@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# check machine installation
+MACHINE=`cat SERVICE | cut -f2 -d"/"`
+if [ -e $HOME/.docker/machine/machines/$MACHINE ]; then
+	echo "docker-machine installed!"
+else
+	docker-machine create --driver virtualbox --engine-storage-driver overlay $MACHINE
+fi
+
+# change env
+eval $(docker-machine env `cat SERVICE | cut -f2 -d/`)
+
+# run docker build
+NAME=`cat SERVICE`
+VERSION=`cat VERSION`
+docker build -t $NAME .
+docker tag -f $NAME $NAME:$VERSION
+

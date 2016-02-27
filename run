@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# change env
+eval $(docker-machine env `cat SERVICE | cut -f2 -d/`)
+
+# run container
+NAME=`cat SERVICE`
+VERSION=`cat VERSION`
+docker run -p 80:80 -d -t $NAME:$VERSION nginx -g 'daemon off;'
+
